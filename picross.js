@@ -10,7 +10,8 @@ function readPuzzle() {
         puzzle.push([]);
     }
 
-    // fill the global 2d array with the status of squares
+    // fill the global 2d array with the status of squares and read row and col
+    // numbers
     for (let i of  puzzleHTML.childNodes) {
         for (let j of i.childNodes) {
             let parse = j.className.split(" ");
@@ -22,12 +23,10 @@ function readPuzzle() {
                 if (parse[1] === "s2") puzzle[x][y] = 2;
             } else {
                 if (parse[1] === "left") {
-                    rowNums = j.innerHTML.split(/[^0-9]+/).filter(x => x != "").map(x => Number(x));
-                    console.log(rowNums);
+                    rows.push(j.innerHTML.split(/[^0-9]+/).filter(x => x != "").map(x => Number(x)));
                 }
                 if (parse[1] === "top") {
-                    colNums = j.innerHTML.split(/[^0-9]+/).filter(x => x != "").map(x => Number(x));
-                    console.log(colNums);
+                    cols.push(j.innerHTML.split(/[^0-9]+/).filter(x => x != "").map(x => Number(x)));
                 }
             }
         }

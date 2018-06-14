@@ -19,12 +19,5 @@
         "persistent": false
     },
 
-    "content_scripts": [
-        {
-            "matches": ["http://liouh.com/picross/"],
-            "js": ["picross.js"]
-        }
-    ],
-
-    "permissions": ["declarativeContent","activeTab"]
+    "permissions": ["storage","declarativeContent","activeTab"]
 }

@@ -15,5 +15,5 @@ chrome.runtime.onInstalled.addListener(function() {
 
 // Listens for click on the icon
 chrome.pageAction.onClicked.addListener(function(tab) {
-    chrome.tabs.executeScript(null, {file: "picross.js"})
+    chrome.tabs.executeScript(null, {file: "solver.js"})
 });

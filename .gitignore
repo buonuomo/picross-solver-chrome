@@ -4,3 +4,5 @@ img/*
 !img/pi48.png
 !img/pi128.png
 !.gitignore
+picross.js
+jquery.js

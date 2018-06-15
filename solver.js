@@ -48,10 +48,14 @@ function cheat() {
 
 // strategy that finds the "sums" of each row and col and fills in cells
 // that must be right
+// NOTE: only to be called on empty puzzle
 function countRowsCols() {
+    // First check to make sure that the puzzle is completely empty
+    var puzzle = JSON.parse(localStorage['picross.state']);
+    if (puzzle.reduce((acc,row) => acc + row.reduce((acc,x) => acc + Math.abs(x), 0), 0) !== 0) return;
     // goes through each row using the summing method
     for (let i = 0; i < ydim; i++) {
-        let rowSum = hintsX[i].reduce((acc,x) => acc+x, 0) + hintsX[i].length - 1;
+        let rowSum = hintsX[i].reduce((acc,x) => acc + x, 0) + hintsX[i].length - 1;
         let error = xdim - rowSum;
         let pos = error;
         for (let j = 0; j < hintsX[i].length; j++) {
@@ -76,48 +80,102 @@ function countRowsCols() {
     return;
 }
                     
-function edges() {
+// Finds the index of the first empty block or blue block not bounded by a grey
+function firstFree(row, start) {
+    row = row.map(x => Math.abs(x));
+    if (start === undefined) start = 0;
+    if (start === row.length) return row.length;
+    if (row[start] === 0) return start;
+    if (row[start] === 1) return firstFree(row, start+1);
+    let i = start;
+    while (i < row.length && row[i] === 2) i++;
+    if (i === row.length) return row.length;
+    if (row[i] === 0) return start;
+    if (row[i] === 1) return firstFree(row, i+1);
+}
+
+// finds the number of complete blue segments before a certain index in a row
+// xy is either 'X' or 'Y'
+// TODO: defer storage retrieval of hint row to calling funcion
+function hintsBefore(i,xy) {
+    let hintRow = JSON.parse(localStorage['picross.hints'+xy])[i];
+    for (var j = 0; hintRow[j] < 0; j++);
+    return j;
+}
+
+function hintsBeforeRev(i,xy) {
+    let hintRow = JSON.parse(localStorage['picross.hints'+xy])[i];
+    for (var j = hintRow.length-1; hintRow[j] < 0; j--);
+    return j;
+}
+
+
+// when a blue is near an edge‚ fill in based on length of first/last block in
+// row
+function nearEdges() {
     var puzzle = JSON.parse(localStorage['picross.state']);
     for (let i = 0; i < ydim; i++) {
-        let firstBlue = puzzle[i].findIndex(x => Math.abs(x) === 2);
+        let ffi = firstFree(puzzle[i]);
+        //console.log("ffi:"+ffi);
+        let hbi = hintsBefore(i,'X');
+        //console.log("hbi: "+hbi);
+        let firstBlue = puzzle[i].findIndex((x,i) => i >= ffi && Math.abs(x) === 2);
+        //console.log("fb: "+firstBlue);
         if (firstBlue !== -1) {
             // When it's one too short
-            if (firstBlue - hintsX[i][0] === 0) clickBox(i,0,1);
+            if ((firstBlue - ffi) - hintsX[i][hbi] === 0) clickBox(i,ffi,1);
             // If the first segment is longer than the first blue
-            if (hintsX[i][0] - firstBlue > 1) {
-                for (let j = 1; j < hintsX[i][0] - firstBlue; j++) {
+            if (hintsX[i][hbi] - (firstBlue - ffi) > 1) {
+                for (let j = 1; j < hintsX[i][hbi] - (firstBlue - ffi); j++) {
                     clickBox(i,firstBlue+j,0);
                 }
             }
         }
-        let hxl = hintsX[i].length - 1;
-        let lastBlue = puzzle[i].reduce((acc,x) => (_ => acc)(acc.unshift(x)), []).findIndex(x => Math.abs(x) === 2);
+        //let hxl = hintsX[i].length - 1;
+        let revRow = puzzle[i].reduce((acc,x) => (_ => acc)(acc.unshift(x)), []);
+        let rffi = firstFree(revRow);
+        //console.log("rffi: "+rffi);
+        let rhbi = hintsBeforeRev(i,'X');
+        //console.log("rhbi: "+rhbi);
+        let lastBlue = revRow.findIndex((x,i) => i >= rffi && Math.abs(x) === 2);
+        //console.log("lb: "+lastBlue);
         if (lastBlue !== -1) {
-            if (lastBlue - hintsX[i][hxl] === 0) clickBox(i,xdim-1,1);
-            if (hintsX[i][hxl] - lastBlue > 1) {
-                for (let j = 1; j < hintsX[i][hxl] - lastBlue; j++) {
+            if ((lastBlue - rffi) - hintsX[i][rhbi] === 0) clickBox(i,xdim-rffi-1,1);
+            if (hintsX[i][rhbi] - (lastBlue - rffi) > 1) {
+                for (let j = 1; j < hintsX[i][rhbi] - (lastBlue - rffi); j++) {
                     clickBox(i,xdim-lastBlue-j-1,0);
                 }
             }
         }
     }
+    // transpose the matrix so that we can get columns
     var puzzleT = puzzle[0].map((col, i) => puzzle.map(row => row[i]));
     for (let i = 0; i < xdim; i++) {
-        let firstBlue = puzzleT[i].findIndex(x => Math.abs(x) === 2);
+        let ffi = firstFree(puzzleT[i]);
+        //console.log("ffi:"+ffi);
+        let hbi = hintsBefore(i,'Y');
+        //console.log("hbi: "+hbi);
+        let firstBlue = puzzleT[i].findIndex((x,i) => i >= ffi && Math.abs(x) === 2);
+        //console.log("fb: "+firstBlue);
         if (firstBlue !== -1) {
-            if (firstBlue - hintsY[i][0] === 0) clickBox(0,i,1);
-            if (hintsY[i][0] - firstBlue > 1) {
-                for (let j = 1; j < hintsY[i][0] - firstBlue; j++) {
+            if ((firstBlue - ffi) - hintsY[i][hbi] === 0) clickBox(ffi,i,1);
+            if (hintsY[i][hbi] - (firstBlue - ffi) > 1) {
+                for (let j = 1; j < hintsY[i][hbi] - (firstBlue - ffi); j++) {
                     clickBox(firstBlue+j,i,0);
                 }
             }
         }
-        let hyl = hintsY[i].length - 1;
-        let lastBlue = puzzleT[i].reduce((acc,x) => (_ => acc)(acc.unshift(x)), []).findIndex(x => Math.abs(x) === 2);
+        let revRow = puzzleT[i].reduce((acc,x) => (_ => acc)(acc.unshift(x)), []);
+        let rffi = firstFree(revRow);
+        //console.log("rffi: "+rffi);
+        let rhbi = hintsBeforeRev(i,'Y');
+        //console.log("rhbi: "+rhbi);
+        let lastBlue = revRow.findIndex((x,i) => i >= rffi && Math.abs(x) === 2);
+        //console.log("lb: "+lastBlue);
         if (lastBlue !== -1) {
-            if (lastBlue - hintsY[i][hyl] === 0) clickBox(ydim-1,i,1);
-            if (hintsY[i][hyl] - lastBlue > 1) {
-                for (let j = 1; j < hintsY[i][hyl] - lastBlue; j++) {
+            if ((lastBlue - rffi) - hintsY[i][rhbi] === 0) clickBox(ydim-rffi-1,i,1);
+            if (hintsY[i][rhbi] - (lastBlue - rffi) > 1) {
+                for (let j = 1; j < hintsY[i][rhbi] - (lastBlue - rffi); j++) {
                     clickBox(ydim-lastBlue-j-1,i,0);
                 }
             }
@@ -126,8 +184,15 @@ function edges() {
     return;
 }
 
-countRowsCols();
-edges();
+function edges() {
+    var puzzle = JSON.parse(localStorage['picross.state']);
+    for (let i = 0; i < ydim; i++) {
+        let first = firstFree(puzzle[i]);
+        if (puzzle[i][first] === 2) {}
+    }
 
-            
+}
+
+countRowsCols();
+nearEdges();
 

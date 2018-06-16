@@ -1,6 +1,7 @@
 img/*
 .*
 !img/pi16.png
+!img/pi32.png
 !img/pi48.png
 !img/pi128.png
 !.gitignore

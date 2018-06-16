@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "picross",
-    "version": "0.0.0.3",
+    "version": "0.0.4",
 
     "description": "An extension that automates certain strategies on Henry Liou's picross game",
     "icons": { "16": "img/pi16.png",
@@ -10,7 +10,9 @@
              },
     
     "page_action": {
-        "default_icon": {"16": "img/pi16.png"},
+        "default_icon": { "16": "img/pi16.png",
+                          "32": "img/pi32.png"
+                        },
         "default_title": "Picross Solver",
         "default_popup": "popup.html"
     },

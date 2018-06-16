@@ -6,6 +6,7 @@ document.getElementById("go").addEventListener("click",callSolver);
 
 // Calls solver.js with the correct options set beforehand
 function callSolver() {
+    document.getElementById("go").parentElement.classList.add("clicked");
     let settings = {
         sums: document.getElementById("row-sum").checked,
         edges: document.getElementById("edges").checked,

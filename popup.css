@@ -3,27 +3,36 @@ body {
 }
 
 .submit {
-  border: black solid 1px;
   display: block;
 }
 
 .submit input {
-    background-color: #4CAF50; /* Green */
+    background-color: #ddd;
+    box-shadow: 0 0 5px 2px #ccc inset;
     border: none;
-    color: white;
+    color: black;
     padding: 8px 16px;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
+    display: block;
     font-size: 12px;
     margin: 0 auto;
-    transition-duration: 0.4s;
+    transition-duration: 0.2s;
     cursor: pointer;
+    outline: none;
 }
 
 .submit input:hover {
-    background-color: #f7e55d;
-    color: black;
+    box-shadow: 0 0 5px 2px #FF8000 inset;
+}
+
+.submit.clicked input{
+    box-shadow: 0 0 5px 2px #01A9DB inset;
+    background-color: #81DAF5;
+}
+
+.submit.clicked input:hover {
+    box-shadow: 0 0 5px 2px #FF8000 inset;
 }
 
 .label-text {

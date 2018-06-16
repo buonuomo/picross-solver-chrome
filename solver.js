@@ -32,6 +32,9 @@ function clickBox(x, y, lr) {
     });
     box.dispatchEvent(down);
     box.dispatchEvent(up);
+    if (box.innerHTML === 'X') {
+        throw "accidentally clicked a wrong box"
+    }
     return;
 }
 
@@ -208,7 +211,7 @@ function edges() {
 */
 
 // Code that gets executed when solver is loaded
-console.log(settings);
+//console.log(settings);
 
 // If the cheat option is selected, confirm first
 if (settings.cheat) {

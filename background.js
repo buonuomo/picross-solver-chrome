@@ -19,5 +19,3 @@ chrome.pageAction.onClicked.addListener(function(tab) {
     chrome.tabs.executeScript(null, {file: "solver.js"})
 });
 */
-
-var hoho = 69;

@@ -130,6 +130,9 @@ function nearEdges() {
                     clickBox(i,firstBlue+j,0);
                 }
             }
+            //console.log(firstBlue+','+ffi+','+hintsX[i][hbi]);
+            //console.log(i);
+            if (firstBlue === ffi && hbi < hintsX[i].length && firstBlue+hintsX[i][hbi] < xdim) clickBox(i,firstBlue+hintsX[i][hbi],1);
         }
         //let hxl = hintsX[i].length - 1;
         let revRow = puzzle[i].reduce((acc,x) => (_ => acc)(acc.unshift(x)), []);
@@ -146,6 +149,10 @@ function nearEdges() {
                     clickBox(i,xdim-lastBlue-j-1,0);
                 }
             }
+            //console.log(lastBlue+','+r
+            //console.log(i);
+            //console.log(lastBlue+','+rhbi+','+(ydim-lastBlue-hintsY[i][rhbi]-1));
+            if (lastBlue === rffi && rhbi < hintsX[i].length && xdim-lastBlue-hintsX[i][rhbi]-1 >= 0) clickBox(i,xdim-lastBlue-hintsX[i][rhbi]-1,1);
         }
     }
     // transpose the matrix so that we can get columns
@@ -164,6 +171,8 @@ function nearEdges() {
                     clickBox(firstBlue+j,i,0);
                 }
             }
+            //console.log(i)
+            if (firstBlue === ffi && hbi < hintsY[i].length && firstBlue+hintsY[i][hbi] < ydim) clickBox(firstBlue+hintsY[i][hbi],i,1);
         }
         let revRow = puzzleT[i].reduce((acc,x) => (_ => acc)(acc.unshift(x)), []);
         let rffi = firstFree(revRow);
@@ -179,11 +188,15 @@ function nearEdges() {
                     clickBox(ydim-lastBlue-j-1,i,0);
                 }
             }
+            //console.log(i);
+            //console.log(lastBlue+','+rhbi+','+(ydim-lastBlue-hintsY[i][rhbi]-1));
+            if (lastBlue === rffi && rhbi < hintsY[i].length && ydim-lastBlue-hintsY[i][rhbi]-1 >= 0) clickBox(ydim-lastBlue-hintsY[i][rhbi]-1,i,1);
         }
     }
     return;
 }
 
+/*
 function edges() {
     var puzzle = JSON.parse(localStorage['picross.state']);
     for (let i = 0; i < ydim; i++) {
@@ -192,6 +205,7 @@ function edges() {
     }
 
 }
+*/
 
 countRowsCols();
 nearEdges();

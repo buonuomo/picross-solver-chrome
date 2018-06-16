@@ -207,6 +207,26 @@ function edges() {
 }
 */
 
-countRowsCols();
-nearEdges();
+// Code that gets executed when solver is loaded
+console.log(settings);
+
+// If the cheat option is selected, confirm first
+if (settings.cheat) {
+    var conf = confirm("Are you sure you want to be a CHEATER??");
+    if (conf) cheat();
+}
+
+// Simply do the counting strategy once if selected
+if (settings.sums) countRowsCols();
+
+// Repeatedly do edges until it doesnt make a difference
+if (settings.edges) {
+    var newState = localStorage['picross.state'];
+    var oldState = "";
+    while (oldState !== newState) {
+        oldState = newState;
+        nearEdges();
+        newState = localStorage['picross.state'];
+    }
+}
 

@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <title> Picross Solver </title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+      <!-- <div class="option"> -->
+      <div class="label-text"> 
+         Row summing strategy 
+      </div>
+      <label class="switch">
+        <input id="row-sum" type="checkbox" checked>
+        <span class="slider round"></span>
+      </label>
+      <!-- </div> -->
+
+    <br><br>
+
+    <!-- <div class="option"> -->
+      <div class="label-text"> 
+        Edge completion 
+      </div>
+      <label class="switch">
+        <input id="edges" type="checkbox" checked>
+        <span class="slider round"></span>
+      </label>
+      <!-- </div> -->
+
+    <br><br>
+
+    <!--  <div class="option"> -->
+      <div class="label-text">
+        Cheat
+      </div>
+      <label class="switch">
+        <input id="cheat" type="checkbox">
+        <span class="slider round danger"></span>
+      </label>
+      <!-- </div> -->
+      <br><br>
+
+      <label class="submit">
+          <div style="display: inline-block; margin: 0 auto;">
+            <input type="button" value="Go!">
+          </div>
+      </label>
+
+    <script src="solver.js"></script>
+  </body>
+</html>

@@ -235,17 +235,24 @@ if (settings.cheat) {
     if (conf) cheat();
 }
 
-// Simply do the counting strategy once if selected
-if (settings.sums) countRowsCols();
 
-// Repeatedly do edges until it doesnt make a difference
-if (settings.edges) {
-    var newState = localStorage['picross.state'];
-    var oldState = "";
-    while (oldState !== newState) {
-        oldState = newState;
-        nearEdges();
-        newState = localStorage['picross.state'];
+// This repeatedly alternates calls, but it may be too slow
+var post = localStorage['picross.state'];
+var pre = "";
+while (pre !== post) {
+    pre = post;
+    // Simply do the counting strategy once if selected
+    if (settings.sums) countRowsCols();
+
+    // Repeatedly do edges until it doesnt make a difference
+    if (settings.edges) {
+        var newState = localStorage['picross.state'];
+        var oldState = "";
+        while (oldState !== newState) {
+            oldState = newState;
+            nearEdges();
+            newState = localStorage['picross.state'];
+        }
     }
+    post = localStorage['picross.state'];
 }
-

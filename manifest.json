@@ -14,7 +14,7 @@
                           "32": "img/pi32.png"
                         },
         "default_title": "Picross Solver",
-        "default_popup": "popup.html"
+        "default_popup": "popup/popup.html"
     },
 
     "background": {

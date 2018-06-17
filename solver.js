@@ -51,31 +51,47 @@ function cheat() {
 
 // strategy that finds the "sums" of each row and col and fills in cells
 // that must be right
-// NOTE: only to be called on empty puzzle
 function countRowsCols() {
-    // First check to make sure that the puzzle is completely empty
     var puzzle = JSON.parse(localStorage['picross.state']);
-    if (puzzle.reduce((acc,row) => acc + row.reduce((acc,x) => acc + Math.abs(x), 0), 0) !== 0) return;
     // goes through each row using the summing method
     for (let i = 0; i < ydim; i++) {
-        let rowSum = hintsX[i].reduce((acc,x) => acc + x, 0) + hintsX[i].length - 1;
-        let error = xdim - rowSum;
-        let pos = error;
-        for (let j = 0; j < hintsX[i].length; j++) {
-            for (let k = 0; k < hintsX[i][j]; k++, pos++) {
-                if (hintsX[i][j] - error - k > 0) clickBox(i,pos,0);
+        // Get information about edges and crossed out hints
+        let row = puzzle[i];
+        let revRow = puzzle[i].reduce((acc,x) => (_ => acc)(acc.unshift(x)), []);
+        let ffi = firstFree(row);
+        let rffi = firstFree(revRow);
+        let hbi = hintsBefore(i,'X');
+        let rhbi = hintsBeforeRev(i,'X');
+
+        // perform normal row count algorithm on free middle portiion of row
+        let slicedHints = hintsX[i].slice(hbi,rhbi+1);
+        let rowSum = slicedHints.reduce((acc,x) => acc + x, 0) + slicedHints.length - 1;
+        let error = xdim - rffi - ffi - rowSum;
+        let pos = ffi + error;
+        for (let j = 0; j < slicedHints.length; j++) {
+            for (let k = 0; k < slicedHints[j]; k++, pos++) {
+                if (slicedHints[j] - error - k > 0) clickBox(i,pos,0);
             }
             pos++;
         }
     }
     // does the same thing for each column
+    var puzzleT = puzzle[0].map((col, i) => puzzle.map(row => row[i]));
     for (let i = 0; i < xdim; i++) {
-        let colSum = hintsY[i].reduce((acc,x) => acc+x, 0) + hintsY[i].length - 1;
-        let error = ydim - colSum;
-        let pos = error;
-        for (let j = 0; j < hintsY[i].length; j++) {
-            for (let k = 0; k < hintsY[i][j]; k++, pos++) {
-                if (hintsY[i][j] - error - k > 0) clickBox(pos,i,0);
+        let col = puzzleT[i];
+        let revCol = puzzleT[i].reduce((acc,x) => (_ => acc)(acc.unshift(x)), []);
+        let ffi = firstFree(col);
+        let rffi = firstFree(revCol);
+        let hbi = hintsBefore(i,'Y');
+        let rhbi = hintsBeforeRev(i,'Y');
+
+        let slicedHints = hintsY[i].slice(hbi,rhbi+1);
+        let colSum = slicedHints.reduce((acc,x) => acc+x, 0) + slicedHints.length - 1;
+        let error = ydim - rffi - ffi - colSum;
+        let pos = ffi + error;
+        for (let j = 0; j < slicedHints.length; j++) {
+            for (let k = 0; k < slicedHints[j]; k++, pos++) {
+                if (slicedHints[j] - error - k > 0) clickBox(pos,i,0);
             }
             pos++;
         }

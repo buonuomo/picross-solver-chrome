@@ -31,10 +31,6 @@ body {
     background-color: #81DAF5;
 }
 
-.submit.clicked input:hover {
-    box-shadow: 0 0 5px 2px #FF8000 inset;
-}
-
 .label-text {
     display: inline-block;
    /* border: black solid 1px;*/
